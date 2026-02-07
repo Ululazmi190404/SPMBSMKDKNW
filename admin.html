@@ -1,0 +1,3188 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Admin Panel - SPMB SMK Darul Kamal</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="logosmk.png" type="image/x-icon">
+    <style>
+        /* ===== ROOT VARIABLES ===== */
+        :root {
+            --primary: #1a237e;
+            --primary-light: #534bae;
+            --secondary: #ff9800;
+            --success: #4caf50;
+            --danger: #f44336;
+            --warning: #ff9800;
+            --info: #2196f3;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --border: #dee2e6;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+        
+        /* ===== ADMIN SPECIFIC STYLES ===== */
+        body {
+            background: #f5f7fb;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .admin-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 15px 0;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Mobile-first responsive adjustments */
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: 0 10px;
+            }
+            
+            .admin-header {
+                padding: 12px 0;
+                margin-bottom: 20px;
+            }
+        }
+        
+        /* ===== ADMIN NAVIGATION ===== */
+        .admin-nav {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            padding: 10px 0;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .logo-img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            background: white;
+            padding: 5px;
+            border-radius: 10px;
+            border: 2px solid var(--secondary);
+        }
+        
+        .logo-text h1 {
+            font-size: 1.2rem;
+            margin: 0;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .logo-text p {
+            font-size: 0.8rem;
+            margin: 2px 0 0 0;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-links .btn-small {
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            min-width: auto;
+        }
+        
+        /* Mobile navigation */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .logo {
+                justify-content: center;
+                text-align: center;
+                min-width: auto;
+            }
+            
+            .nav-links {
+                justify-content: center;
+                width: 100%;
+            }
+            
+            .nav-links .btn-small {
+                flex: 1;
+                min-width: 100px;
+            }
+        }
+        
+        /* ===== STATS CARDS ===== */
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+            border-top: 4px solid;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: inherit;
+            opacity: 0.3;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .stat-card h3 {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        
+        .stat-card .number {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin: 10px 0;
+            color: var(--dark);
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        .stat-card .trend {
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: 500;
+        }
+        
+        .trend.up {
+            background: #e8f5e9;
+            color: var(--success);
+        }
+        
+        .trend.down {
+            background: #ffebee;
+            color: var(--danger);
+        }
+        
+        .percentage {
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+        
+        .stat-card.total { border-top-color: var(--primary); }
+        .stat-card.mp { border-top-color: #2196f3; }
+        .stat-card.ak { border-top-color: #4caf50; }
+        .stat-card.bpf { border-top-color: #9c27b0; }
+        
+        @media (max-width: 768px) {
+            .admin-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .stat-card {
+                padding: 15px;
+            }
+            
+            .stat-card .number {
+                font-size: 1.8rem;
+            }
+            
+            .stat-card h3 {
+                font-size: 0.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .admin-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* ===== TABS NAVIGATION ===== */
+        .admin-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 25px;
+            background: white;
+            padding: 5px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        .admin-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            background: transparent;
+            color: var(--gray);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border-radius: 8px;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .tab-btn:hover {
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--primary);
+        }
+        
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(26, 35, 126, 0.2);
+        }
+        
+        .tab-btn i {
+            font-size: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .admin-tabs {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+            
+            .tab-btn {
+                min-width: 140px;
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .tab-btn i {
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* ===== TAB CONTENT ===== */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* ===== SEARCH & FILTER ===== */
+        .search-filter {
+            background: white;
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            align-items: end;
+        }
+        
+        .search-box {
+            position: relative;
+            grid-column: 1 / -1;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 14px 45px 14px 15px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: white;
+        }
+        
+        .search-box input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.1);
+            outline: none;
+        }
+        
+        .search-box i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            pointer-events: none;
+        }
+        
+        .filter-group select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .filter-group select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.1);
+            outline: none;
+        }
+        
+        .date-filter {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .date-filter input {
+            flex: 1;
+            padding: 14px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        .date-filter input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.1);
+            outline: none;
+        }
+        
+        @media (max-width: 768px) {
+            .search-filter {
+                grid-template-columns: 1fr;
+                padding: 15px;
+            }
+            
+            .date-filter {
+                flex-direction: column;
+            }
+            
+            .search-box input,
+            .filter-group select,
+            .date-filter input {
+                padding: 12px;
+            }
+        }
+        
+        /* ===== DATA TABLE ===== */
+        .data-table-container {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+        }
+        
+        .table-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--light);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .table-header h2 {
+            margin: 0;
+            color: var(--primary);
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .export-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+        
+        th {
+            background: #f1f5ff;
+            padding: 16px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--primary);
+            border-bottom: 2px solid var(--border);
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+        
+        tr:hover {
+            background-color: #f5f9ff;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 6px;
+            flex-wrap: nowrap;
+        }
+        
+        .btn-small {
+            padding: 8px 10px;
+            font-size: 0.8rem;
+            min-width: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+        }
+        
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray);
+        }
+        
+        .empty-state i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: #e0e0e0;
+        }
+        
+        .empty-state h3 {
+            margin-bottom: 10px;
+            color: var(--gray);
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            padding: 20px;
+            background: var(--light);
+            border-top: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+        
+        .page-btn {
+            padding: 8px 14px;
+            border: 1px solid var(--border);
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            min-width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .page-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .page-btn:hover:not(.active) {
+            background: #f5f5f5;
+        }
+        
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Mobile table styles */
+        @media (max-width: 768px) {
+            .data-table-container {
+                border-radius: 10px;
+                overflow-x: auto;
+            }
+            
+            .table-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+                padding: 15px;
+            }
+            
+            .export-buttons {
+                justify-content: center;
+            }
+            
+            table {
+                min-width: 700px;
+            }
+            
+            th, td {
+                padding: 12px 8px;
+                font-size: 0.9rem;
+            }
+            
+            .action-buttons {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .btn-small {
+                padding: 6px 8px;
+                min-width: 32px;
+            }
+            
+            .pagination {
+                padding: 15px;
+            }
+            
+            .page-btn {
+                padding: 6px 10px;
+                min-width: 36px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* ===== SETTINGS TAB ===== */
+        .settings-container {
+            background: white;
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+        }
+        
+        .settings-section {
+            margin-bottom: 30px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .settings-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .settings-section h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f7ff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .settings-section h3 i {
+            color: var(--secondary);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.95rem;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: white;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.1);
+            outline: none;
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .schedule-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .schedule-item span {
+            flex: 1;
+        }
+        
+        .schedule-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            .settings-container {
+                padding: 20px 15px;
+            }
+            
+            .settings-section {
+                margin-bottom: 25px;
+                padding-bottom: 20px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .schedule-item {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+            
+            .schedule-actions {
+                justify-content: flex-end;
+            }
+        }
+        
+        /* ===== MODAL STYLES ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.4s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 20px 25px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .close-modal {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+        
+        .close-modal:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+        
+        .modal-body {
+            padding: 25px;
+        }
+        
+        @media (max-width: 768px) {
+            .modal {
+                padding: 10px;
+            }
+            
+            .modal-content {
+                max-height: 95vh;
+                max-width: 100%;
+            }
+            
+            .modal-header {
+                padding: 15px 20px;
+            }
+            
+            .modal-body {
+                padding: 20px;
+            }
+        }
+        
+        /* ===== BUTTONS ===== */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(26, 35, 126, 0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #2e7d32);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #f57c00);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #d32f2f);
+            color: white;
+        }
+        
+        .btn-info {
+            background: linear-gradient(135deg, var(--info), #1976d2);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        
+        /* ===== FOOTER ACTIONS ===== */
+        .footer-actions {
+            display: flex;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        @media (max-width: 768px) {
+            .footer-actions {
+                flex-direction: column;
+            }
+            
+            .footer-actions .btn {
+                width: 100%;
+            }
+        }
+        
+        /* ===== LOADING SPINNER ===== */
+        .loading-spinner {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* ===== UTILITY CLASSES ===== */
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .text-left { text-align: left; }
+        .mb-0 { margin-bottom: 0 !important; }
+        .mt-0 { margin-top: 0 !important; }
+        .mb-1 { margin-bottom: 10px !important; }
+        .mt-1 { margin-top: 10px !important; }
+        .mb-2 { margin-bottom: 20px !important; }
+        .mt-2 { margin-top: 20px !important; }
+        .mb-3 { margin-bottom: 30px !important; }
+        .mt-3 { margin-top: 30px !important; }
+        .d-none { display: none !important; }
+        .d-flex { display: flex !important; }
+        .d-block { display: block !important; }
+        .w-100 { width: 100% !important; }
+        
+        /* ===== TOAST NOTIFICATION ===== */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+            max-width: 400px;
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        .toast-success {
+            background: linear-gradient(135deg, var(--success), #2e7d32);
+        }
+        
+        .toast-error {
+            background: linear-gradient(135deg, var(--danger), #d32f2f);
+        }
+        
+        .toast-info {
+            background: linear-gradient(135deg, var(--info), #1976d2);
+        }
+        
+        .toast-warning {
+            background: linear-gradient(135deg, var(--warning), #f57c00);
+        }
+        
+        @media (max-width: 768px) {
+            .toast {
+                left: 20px;
+                right: 20px;
+                max-width: none;
+            }
+        }
+        
+        /* Tombol Auto Refresh */
+        .btn-refresh-toggle {
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            color: white;
+        }
+        
+        .btn-refresh-toggle.active {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+        }
+        
+        .nav-links .btn-small {
+            min-width: 120px;
+            justify-content: center;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links .btn-small {
+                min-width: 100px;
+                font-size: 0.75rem;
+                padding: 8px 10px;
+            }
+        }
+        
+        /* Status indicator */
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .status-online {
+            background-color: #4caf50;
+            box-shadow: 0 0 5px #4caf50;
+        }
+        
+        .status-offline {
+            background-color: #f44336;
+            box-shadow: 0 0 5px #f44336;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hapus script pengecekan login inline yang ada di sini -->
+    
+    <div class="admin-nav">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="logosmk.png" alt="Logo SMK" class="logo-img">
+                <div class="logo-text">
+                    <h1>Admin Panel SPMB</h1>
+                    <p>SMK Darul Kamal NW Kembang Kerang</p>
+                    <p id="refreshStatus" style="font-size: 0.7rem; margin-top: 2px; color: rgba(255, 255, 255, 0.8);">
+                        <span class="status-indicator status-online"></span>Auto-refresh aktif
+                    </p>
+                </div>
+            </div>
+            
+            <div class="nav-links">
+                <button class="btn btn-small btn-primary" onclick="refreshData()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+                <button class="btn btn-small btn-success" id="toggleRefreshBtn" onclick="toggleAutoRefresh()">
+                    <i class="fas fa-pause"></i> Pause Refresh
+                </button>
+                <button class="btn btn-small btn-danger" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="admin-container">
+        <div class="admin-stats">
+            <div class="stat-card total">
+                <h3>Total Pendaftar</h3>
+                <div class="number" id="totalPendaftar">0</div>
+                <div class="trend up" id="totalTrend">+0 hari ini</div>
+            </div>
+            <div class="stat-card mp">
+                <h3>Manajemen Perkantoran</h3>
+                <div class="number" id="countMP">0</div>
+                <div class="percentage">0% dari total</div>
+            </div>
+            <div class="stat-card ak">
+                <h3>Akutansi & Keuangan</h3>
+                <div class="number" id="countAK">0</div>
+                <div class="percentage">0% dari total</div>
+            </div>
+            <div class="stat-card bpf">
+                <h3>Broadcasting & Perfilman</h3>
+                <div class="number" id="countBPF">0</div>
+                <div class="percentage">0% dari total</div>
+            </div>
+        </div>
+        
+        <!-- Tabs Navigation -->
+        <div class="admin-tabs">
+            <button class="tab-btn active" onclick="showTab('data')" data-tab="data">
+                <i class="fas fa-database"></i> Data Pendaftar
+            </button>
+            <button class="tab-btn" onclick="showTab('settings')" data-tab="settings">
+                <i class="fas fa-cog"></i> Pengaturan SPMB
+            </button>
+            <button class="tab-btn" onclick="showTab('info')" data-tab="info">
+                <i class="fas fa-info-circle"></i> Informasi Sistem
+            </button>
+        </div>
+        
+        <!-- Tab 1: Data Pendaftar -->
+        <div id="dataTab" class="tab-content active">
+            <div class="search-filter">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Cari nama, NISN, atau nomor pendaftaran...">
+                    <i class="fas fa-search"></i>
+                </div>
+                
+                <div class="filter-group">
+                    <select id="filterJurusan" onchange="filterData()">
+                        <option value="">Semua Jurusan</option>
+                        <option value="Manajemen Perkantoran (MP)">Manajemen Perkantoran</option>
+                        <option value="Akutansi dan Keuangan (AK)">Akutansi & Keuangan</option>
+                        <option value="Broadcasting & Perfilman (BPF)">Broadcasting & Perfilman</option>
+                    </select>
+                </div>
+                
+                <div class="date-filter">
+                    <input type="date" id="dateFrom" onchange="filterData()">
+                    <input type="date" id="dateTo" onchange="filterData()">
+                </div>
+                
+                <button class="btn btn-secondary" onclick="clearFilters()">
+                    <i class="fas fa-times"></i> Clear Filter
+                </button>
+            </div>
+            
+            <div class="data-table-container">
+                <div class="table-header">
+                    <h2><i class="fas fa-table"></i> Data Pendaftar</h2>
+                    <div class="export-buttons no-print">
+                        <button class="btn btn-success" onclick="exportToExcel()">
+                            <i class="fas fa-file-excel"></i> Excel
+                        </button>
+                        <button class="btn btn-danger" onclick="exportToPDF()">
+                            <i class="fas fa-file-pdf"></i> PDF
+                        </button>
+                        <button class="btn btn-info" onclick="window.print()">
+                            <i class="fas fa-print"></i> Print
+                        </button>
+                    </div>
+                </div>
+                
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>No. Pendaftaran</th>
+                                <th>Nama Lengkap</th>
+                                <th>NISN</th>
+                                <th>Sekolah Asal</th>
+                                <th>Jurusan</th>
+                                <th>Total Nilai</th>
+                                <th>Tanggal Daftar</th>
+                                <th>Status</th>
+                                <th class="no-print">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dataTable">
+                            <!-- Data akan diisi oleh JavaScript -->
+                        </tbody>
+                    </table>
+                    
+                    <div id="emptyState" class="empty-state" style="display: none;">
+                        <i class="fas fa-database"></i>
+                        <h3>Belum ada data pendaftar</h3>
+                        <p>Data pendaftar akan muncul di sini setelah ada yang mendaftar</p>
+                    </div>
+                </div>
+                
+                <div class="pagination" id="pagination">
+                    <!-- Pagination akan diisi oleh JavaScript -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tab 2: Pengaturan SPMB -->
+        <div id="settingsTab" class="tab-content">
+            <div class="settings-container">
+                <!-- Informasi Sekolah -->
+                <div class="settings-section">
+                    <h3><i class="fas fa-school"></i> Informasi Sekolah</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="schoolName">Nama Sekolah</label>
+                            <input type="text" id="schoolName" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="schoolAccreditation">Akreditasi</label>
+                            <input type="text" id="schoolAccreditation" class="form-control" placeholder="Contoh: TERAKREDITASI B">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="schoolAddress">Alamat Sekolah</label>
+                        <textarea id="schoolAddress" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="schoolVision">Visi Sekolah</label>
+                            <textarea id="schoolVision" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="schoolMission">Misi Sekolah</label>
+                            <textarea id="schoolMission" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="saveSchoolInfo()">
+                        <i class="fas fa-save"></i> Simpan Informasi Sekolah
+                    </button>
+                </div>
+                
+                <!-- Jadwal SPMB -->
+                <div class="settings-section">
+                    <h3><i class="fas fa-calendar-alt"></i> Jadwal SPMB</h3>
+                    <div id="scheduleList">
+                        <!-- Jadwal akan dimuat di sini -->
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 1;">
+                            <label for="newSchedule">Tambah Jadwal Baru</label>
+                            <input type="text" id="newSchedule" class="form-control" placeholder="Contoh: Pendaftaran Online: 1 Januari - 30 Juni 2026">
+                        </div>
+                        <div class="form-group" style="align-self: flex-end;">
+                            <button class="btn btn-success" onclick="addSchedule()" style="height: 46px;">
+                                <i class="fas fa-plus"></i> Tambah Jadwal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Informasi Kontak -->
+                <div class="settings-section">
+                    <h3><i class="fas fa-address-book"></i> Informasi Kontak</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="contactPhone">Telepon</label>
+                            <input type="text" id="contactPhone" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="contactWhatsApp">WhatsApp</label>
+                            <input type="text" id="contactWhatsApp" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="contactEmail">Email</label>
+                            <input type="email" id="contactEmail" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="contactWebsite">Website</label>
+                            <input type="text" id="contactWebsite" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactAddress">Alamat Panitia</label>
+                        <textarea id="contactAddress" class="form-control" rows="3"></textarea>
+                    </div>
+                    <button class="btn btn-primary" onclick="saveContactInfo()">
+                        <i class="fas fa-save"></i> Simpan Informasi Kontak
+                    </button>
+                </div>
+                
+                <!-- Jurusan -->
+                <div class="settings-section">
+                    <h3><i class="fas fa-graduation-cap"></i> Program Keahlian</h3>
+                    <div id="majorList">
+                        <!-- Jurusan akan dimuat di sini -->
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="majorCode">Kode Jurusan</label>
+                            <input type="text" id="majorCode" class="form-control" placeholder="Contoh: MP">
+                        </div>
+                        <div class="form-group">
+                            <label for="majorName">Nama Jurusan</label>
+                            <input type="text" id="majorName" class="form-control" placeholder="Contoh: Manajemen Perkantoran">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="majorDescription">Deskripsi Jurusan</label>
+                        <textarea id="majorDescription" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 1;">
+                            <label for="majorFacilities">Fasilitas</label>
+                            <input type="text" id="majorFacilities" class="form-control" placeholder="Contoh: Lab. Komputer, Lab. Administrasi">
+                        </div>
+                        <div class="form-group" style="align-self: flex-end;">
+                            <button class="btn btn-success" onclick="addMajor()" style="height: 46px;">
+                                <i class="fas fa-plus"></i> Tambah Jurusan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tab 3: Informasi Sistem -->
+        <div id="infoTab" class="tab-content">
+            <div class="settings-container">
+                <div class="settings-section">
+                    <h3><i class="fas fa-info-circle"></i> Informasi Sistem</h3>
+                    <div class="form-group">
+                        <label>Versi Sistem</label>
+                        <input type="text" class="form-control" value="SPMB v2.0" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Total Data Tersimpan</label>
+                        <input type="text" id="systemDataCount" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Ukuran Database</label>
+                        <input type="text" id="systemStorageSize" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Waktu Sistem</label>
+                        <input type="text" id="systemTime" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Status Auto-Refresh</label>
+                        <input type="text" id="autoRefreshStatus" class="form-control" readonly value="Aktif">
+                    </div>
+                    <div class="form-group">
+                        <label>Data Terakhir Diperbarui</label>
+                        <input type="text" id="lastUpdateTime" class="form-control" readonly>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <h3><i class="fas fa-database"></i> Backup & Restore</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <button class="btn btn-info w-100" onclick="backupDatabase()">
+                                <i class="fas fa-download"></i> Backup Data
+                            </button>
+                        </div>
+                        <div class="form-group">
+                            <label for="restoreFile">Restore Data</label>
+                            <input type="file" id="restoreFile" class="form-control" accept=".json">
+                        </div>
+                    </div>
+                    <button class="btn btn-warning" onclick="restoreDatabase()">
+                        <i class="fas fa-upload"></i> Restore dari File
+                    </button>
+                </div>
+                
+                <div class="settings-section">
+                    <h3><i class="fas fa-user-shield"></i> Keamanan</h3>
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div>
+                            <strong>Perhatian:</strong> Untuk keamanan sistem, pastikan untuk logout setelah selesai menggunakan admin panel.
+                        </div>
+                    </div>
+                    <button class="btn btn-danger" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout Sekarang
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-actions no-print">
+            <button class="btn btn-primary" onclick="window.location.href='index.html'">
+                <i class="fas fa-arrow-left"></i> Kembali ke Formulir
+            </button>
+            <button class="btn btn-danger" onclick="confirmDeleteAll()">
+                <i class="fas fa-trash"></i> Hapus Semua Data
+            </button>
+        </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Operasi berhasil!</span>
+    </div>
+    
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="loading-spinner"></div>
+    
+    <!-- Modal Detail -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-graduate"></i> Detail Pendaftar</h3>
+                <button class="close-modal" onclick="closeModal('detailModal')">&times;</button>
+            </div>
+            <div class="modal-body" id="detailContent">
+                <!-- Detail akan diisi oleh JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Edit -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Edit Data Pendaftar</h3>
+                <button class="close-modal" onclick="closeModal('editModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <!-- Form edit akan diisi oleh JavaScript -->
+                </form>
+                <div style="display: flex; gap: 10px; margin-top: 30px;">
+                    <button class="btn btn-primary" type="button" onclick="saveEdit()">
+                        <i class="fas fa-save"></i> Simpan Perubahan
+                    </button>
+                    <button class="btn btn-secondary" type="button" onclick="closeModal('editModal')">
+                        <i class="fas fa-times"></i> Batal
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Dokumen -->
+    <div class="modal" id="documentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-file-alt"></i> Dokumen Pendaftar</h3>
+                <button class="close-modal" onclick="closeModal('documentModal')">&times;</button>
+            </div>
+            <div class="modal-body" id="documentContent">
+                <!-- Dokumen akan diisi oleh JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Konfirmasi -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-exclamation-triangle"></i> Konfirmasi</h3>
+                <button class="close-modal" onclick="closeModal('confirmModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage">Apakah Anda yakin?</p>
+                <div style="display: flex; gap: 10px; margin-top: 30px;">
+                    <button class="btn btn-danger" type="button" onclick="confirmAction()">
+                        <i class="fas fa-check"></i> Ya
+                    </button>
+                    <button class="btn btn-secondary" type="button" onclick="closeModal('confirmModal')">
+                        <i class="fas fa-times"></i> Tidak
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Script Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <script>
+        // ===== GLOBAL VARIABLES =====
+        let currentData = [];
+        let filteredData = [];
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let editingId = null;
+        let confirmCallback = null;
+        let autoRefreshInterval;
+        let isAutoRefreshing = true;
+        let lastUpdateTime = null;
+        
+        // ===== PERBAIKAN: Fungsi loadData yang Diperbarui =====
+        function loadData() {
+            try {
+                console.log('Loading data...');
+                
+                // Coba gunakan database.js dulu
+                let database = { pendaftar: [] };
+                let shouldSave = false;
+                
+                if (window.spmbDB) {
+                    database = window.spmbDB.getAll();
+                    currentData = database.pendaftar || [];
+                    console.log('Data loaded from spmbDB:', currentData.length);
+                } else {
+                    // Fallback ke localStorage langsung
+                    const stored = localStorage.getItem('spmbDatabase');
+                    if (stored) {
+                        database = JSON.parse(stored);
+                    }
+                    currentData = database.pendaftar || [];
+                    console.log('Data loaded from localStorage:', currentData.length);
+                }
+                
+                // Juga cek sessionStorage untuk data baru
+                const newReg = sessionStorage.getItem('newRegistration');
+                if (newReg) {
+                    try {
+                        const data = JSON.parse(newReg);
+                        console.log('New registration found:', data.nomorPendaftaran);
+                        
+                        // Cek apakah data sudah ada di currentData
+                        const exists = currentData.some(p => p.nomorPendaftaran === data.nomorPendaftaran);
+                        if (!exists) {
+                            // Validasi data sebelum ditambahkan
+                            if (!data.nomorPendaftaran || !data.nama) {
+                                console.warn('Data tidak valid, diabaikan');
+                                sessionStorage.removeItem('newRegistration');
+                                return currentData;
+                            }
+                            
+                            currentData.push(data);
+                            console.log('Data baru ditambahkan:', data.nomorPendaftaran);
+                            
+                            // Simpan kembali ke localStorage
+                            database.pendaftar = currentData;
+                            
+                            // Update statistics
+                            updateDatabaseStatistics(database);
+                            
+                            localStorage.setItem('spmbDatabase', JSON.stringify(database));
+                            
+                            // Hapus dari sessionStorage
+                            sessionStorage.removeItem('newRegistration');
+                            
+                            // Update last update time
+                            lastUpdateTime = new Date();
+                            
+                            // Tampilkan notifikasi
+                            showToast('Data pendaftar baru berhasil ditambahkan!', 'success');
+                        } else {
+                            console.log('Data sudah ada, menghapus dari sessionStorage');
+                            sessionStorage.removeItem('newRegistration');
+                        }
+                    } catch (e) {
+                        console.error('Error processing new registration:', e);
+                        sessionStorage.removeItem('newRegistration');
+                    }
+                }
+                
+                lastUpdateTime = new Date();
+                return currentData;
+            } catch (error) {
+                console.error('Error loading data:', error);
+                currentData = [];
+                return [];
+            }
+        }
+        
+        // Fungsi helper untuk update statistics
+        function updateDatabaseStatistics(database) {
+            const today = new Date().toDateString();
+            const todayCount = database.pendaftar.filter(p => {
+                try {
+                    const itemDate = new Date(p.tanggalDaftar).toDateString();
+                    return itemDate === today;
+                } catch (e) {
+                    return false;
+                }
+            }).length;
+            
+            database.statistics = {
+                totalRegistrations: database.pendaftar.length,
+                registrationsToday: todayCount,
+                lastUpdated: new Date().toISOString()
+            };
+            
+            return database;
+        }
+        
+        // ===== PERBAIKAN: Fungsi updateStatistics =====
+        function updateStatistics(data) {
+            console.log('Updating statistics with data:', data); // Debug log
+            
+            const total = data.length;
+            const today = new Date().toDateString();
+            const todayCount = data.filter(item => {
+                if (!item.tanggalDaftar) return false;
+                const itemDate = new Date(item.tanggalDaftar).toDateString();
+                return itemDate === today;
+            }).length;
+            
+            const mpCount = data.filter(item => item.pilihanJurusan && 
+                (item.pilihanJurusan.includes('Manajemen') || item.pilihanJurusan.includes('MP'))).length;
+            
+            const akCount = data.filter(item => item.pilihanJurusan && 
+                (item.pilihanJurusan.includes('Akutansi') || item.pilihanJurusan.includes('AK'))).length;
+            
+            const bpfCount = data.filter(item => item.pilihanJurusan && 
+                (item.pilihanJurusan.includes('Broadcasting') || item.pilihanJurusan.includes('BPF'))).length;
+            
+            console.log('Counts:', { total, todayCount, mpCount, akCount, bpfCount }); // Debug log
+            
+            // Update DOM elements
+            document.getElementById('totalPendaftar').textContent = total;
+            document.getElementById('totalTrend').textContent = `+${todayCount} hari ini`;
+            document.getElementById('countMP').textContent = mpCount;
+            document.getElementById('countAK').textContent = akCount;
+            document.getElementById('countBPF').textContent = bpfCount;
+            
+            // Update percentages
+            const mpPercentage = total > 0 ? ((mpCount / total) * 100).toFixed(1) : 0;
+            const akPercentage = total > 0 ? ((akCount / total) * 100).toFixed(1) : 0;
+            const bpfPercentage = total > 0 ? ((bpfCount / total) * 100).toFixed(1) : 0;
+            
+            document.querySelector('.stat-card.mp .percentage').textContent = `${mpPercentage}% dari total`;
+            document.querySelector('.stat-card.ak .percentage').textContent = `${akPercentage}% dari total`;
+            document.querySelector('.stat-card.bpf .percentage').textContent = `${bpfPercentage}% dari total`;
+        }
+        
+        // ===== PERBAIKAN: Fungsi Auto-Refresh =====
+        function toggleAutoRefresh() {
+            isAutoRefreshing = !isAutoRefreshing;
+            
+            if (isAutoRefreshing) {
+                setupAutoRefresh();
+                showToast('Auto-refresh diaktifkan', 'success');
+                console.log('Auto-refresh enabled');
+                updateRefreshStatusUI();
+            } else {
+                if (autoRefreshInterval) {
+                    clearInterval(autoRefreshInterval);
+                    autoRefreshInterval = null;
+                }
+                showToast('Auto-refresh dimatikan', 'warning');
+                console.log('Auto-refresh disabled');
+                updateRefreshStatusUI();
+            }
+            
+            // Update UI
+            const toggleBtn = document.getElementById('toggleRefreshBtn');
+            if (toggleBtn) {
+                toggleBtn.innerHTML = isAutoRefreshing ? 
+                    '<i class="fas fa-pause"></i> Pause Refresh' : 
+                    '<i class="fas fa-play"></i> Resume Refresh';
+                toggleBtn.className = isAutoRefreshing ? 
+                    'btn btn-small btn-success' : 
+                    'btn btn-small btn-warning';
+            }
+        }
+        
+        function setupAutoRefresh() {
+            // Hapus interval sebelumnya jika ada
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+            }
+            
+            // Setup interval baru (2000ms = 2 detik)
+            autoRefreshInterval = setInterval(function() {
+                if (!document.hidden) {
+                    const activeTab = document.querySelector('.tab-btn.active');
+                    if (activeTab && activeTab.dataset.tab === 'data') {
+                        console.log('Auto-refresh triggered');
+                        const beforeCount = currentData.length;
+                        loadData();
+                        filterData();
+                        
+                        // Update waktu terakhir
+                        updateLastUpdateTime();
+                        
+                        // Hanya tampilkan toast jika ada perubahan
+                        if (currentData.length !== beforeCount) {
+                            showToast('Data diperbarui otomatis', 'info');
+                        }
+                    }
+                }
+            }, 2000);
+        }
+        
+        // Fungsi untuk update status UI
+        function updateRefreshStatusUI() {
+            const statusElement = document.getElementById('refreshStatus');
+            const statusIndicator = statusElement.querySelector('.status-indicator');
+            
+            if (isAutoRefreshing) {
+                statusElement.innerHTML = '<span class="status-indicator status-online"></span>Auto-refresh aktif';
+                document.getElementById('autoRefreshStatus').value = 'Aktif';
+            } else {
+                statusElement.innerHTML = '<span class="status-indicator status-offline"></span>Auto-refresh nonaktif';
+                document.getElementById('autoRefreshStatus').value = 'Nonaktif';
+            }
+        }
+        
+        // Fungsi untuk update waktu terakhir
+        function updateLastUpdateTime() {
+            if (lastUpdateTime) {
+                const now = new Date(lastUpdateTime);
+                const formattedTime = now.toLocaleTimeString('id-ID', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+                document.getElementById('lastUpdateTime').value = formattedTime;
+            }
+        }
+        
+        // Fungsi untuk refresh data manual
+        function refreshData() {
+            console.log('Manual refresh triggered');
+            const beforeCount = currentData.length;
+            loadData();
+            filterData();
+            showToast('Data telah direfresh!', 'success');
+            
+            // Update waktu terakhir
+            updateLastUpdateTime();
+            
+            // Log perubahan
+            if (currentData.length !== beforeCount) {
+                console.log(`Data berubah: ${beforeCount} -> ${currentData.length}`);
+            }
+        }
+        
+        // Fungsi untuk update UI admin dengan data baru
+        window.adminDataUpdate = function() {
+            if (document.getElementById('dataTab').classList.contains('active')) {
+                console.log('Admin data update called');
+                loadData();
+                filterData();
+                showToast('Data diperbarui', 'info');
+            }
+        };
+        
+        // ===== TOAST NOTIFICATION =====
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            const icon = toast.querySelector('i');
+            
+            // Set message and type
+            toastMessage.textContent = message;
+            toast.className = `toast toast-${type}`;
+            
+            // Set icon based on type
+            const icons = {
+                'success': 'fa-check-circle',
+                'error': 'fa-exclamation-circle',
+                'info': 'fa-info-circle',
+                'warning': 'fa-exclamation-triangle'
+            };
+            
+            icon.className = `fas ${icons[type] || 'fa-info-circle'}`;
+            
+            // Show toast
+            toast.classList.add('show');
+            
+            // Auto hide after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // ===== LOADING INDICATOR =====
+        function showLoading(show = true) {
+            const spinner = document.getElementById('loadingSpinner');
+            if (show) {
+                spinner.style.display = 'block';
+            } else {
+                spinner.style.display = 'none';
+            }
+        }
+        
+        // ===== TAB MANAGEMENT =====
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            
+            // Set active button
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            
+            // Load data for settings tab if needed
+            if (tabName === 'settings') {
+                loadSettingsData();
+            } else if (tabName === 'info') {
+                loadSystemInfo();
+            }
+        }
+        
+        // ===== SETTINGS MANAGEMENT =====
+        function loadSettingsData() {
+            try {
+                const database = JSON.parse(localStorage.getItem('spmbDatabase')) || {};
+                
+                // Load school info
+                if (database.infoSekolah) {
+                    document.getElementById('schoolName').value = database.infoSekolah.nama || '';
+                    document.getElementById('schoolAddress').value = database.infoSekolah.alamat || '';
+                    document.getElementById('schoolAccreditation').value = database.infoSekolah.akreditasi || '';
+                    document.getElementById('schoolVision').value = database.infoSekolah.visi || '';
+                    document.getElementById('schoolMission').value = database.infoSekolah.misi || '';
+                }
+                
+                // Load schedules
+                loadScheduleList();
+                
+                // Load contact info
+                if (database.kontak) {
+                    document.getElementById('contactPhone').value = database.kontak.telepon || '';
+                    document.getElementById('contactWhatsApp').value = database.kontak.whatsapp || '';
+                    document.getElementById('contactEmail').value = database.kontak.email || '';
+                    document.getElementById('contactWebsite').value = database.kontak.website || '';
+                    document.getElementById('contactAddress').value = database.kontak.alamat || '';
+                }
+                
+                // Load majors
+                loadMajorList();
+                
+            } catch (error) {
+                console.error('Error loading settings:', error);
+                showToast('Gagal memuat pengaturan', 'error');
+            }
+        }
+        
+        function saveSchoolInfo() {
+            try {
+                const database = JSON.parse(localStorage.getItem('spmbDatabase')) || {};
+                
+                database.infoSekolah = {
+                    nama: document.getElementById('schoolName').value,
+                    alamat: document.getElementById('schoolAddress').value,
+                    akreditasi: document.getElementById('schoolAccreditation').value,
+                    visi: document.getElementById('schoolVision').value,
+                    misi: document.getElementById('schoolMission').value
+                };
+                
+                localStorage.setItem('spmbDatabase', JSON.stringify(database));
+                showToast('Informasi sekolah berhasil disimpan', 'success');
+                
+            } catch (error) {
+                console.error('Error saving school info:', error);
+                showToast('Gagal menyimpan informasi sekolah', 'error');
+            }
+        }
+        
+        function loadScheduleList() {
+            try {
+                const database = JSON.parse(localStorage.getItem('spmbDatabase')) || {};
+                const scheduleList = document.getElementById('scheduleList');
+                const schedules = database.jadwal || [];
+                
+                if (schedules.length === 0) {
+                    scheduleList.innerHTML = '<p class="text-center text-muted">Belum ada jadwal yang ditambahkan</p>';
+                    return;
+                }
+                
+                scheduleList.innerHTML = schedules.map((schedule, index) => `
+                    <div class="schedule-item">
+                        <span>${schedule}</span>
+                        <div class="schedule-actions">
+                            <button class="btn btn-small btn-warning" onclick="editSchedule(${index})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-small btn-danger" onclick="deleteSchedule(${index})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Error loading schedules:', error);
+            }
+        }
+        
+        function addSchedule() {
+            const newSchedule = document.getElementById('newSchedule').value.trim();
+            
+            if (!newSchedule) {
+                showToast('Jadwal tidak boleh kosong', 'warning');
+                return;
+            }
+            
+            try {
+                const database = JSON.parse(localStorage.getItem('spmbDatabase')) || {};
+                
+                if (!database.jadwal) {
+                    database.jadwal = [];
+                }
+                
+                database.jadwal.push(newSchedule);
+                localStorage.setItem('spmbDatabase', JSON.stringify(database));
+                
+                // Clear input and refresh list
+                document.getElementById('newSchedule').value = '';
+                loadScheduleList();
+                showToast('Jadwal berhasil ditambahkan', 'success');
+                
+            } catch (error) {
+                console.error('Error adding schedule:', error);
+                showToast('Gagal menambahkan jadwal', 'error');
+            }
+        }
+        
+        function editSchedule(index) {
+            try {
+                const database = JSON.parse(localStorage.getItem('spmbDatabase')) || {};
+                const schedules = database.jadwal || [];
+                
+                if (schedules[index]) {
+                    const newSchedule = prompt('Edit jadwal:', schedules[index]);
+                    
+                    if (newSchedule !== null && newSchedule.trim() !== '') {
+                        schedules[index] = newSchedule.trim();
+                        database.jadwal = schedules;
+                        localStorage.setItem('spmbDatabase', JSON.stringify(database));
+                        loadScheduleList();
+                        showToast('Jadwal berhasil diubah', 'success');
+                    }
+                }
+                
+            } catch (error) {
+                console.error('Error editing schedule:', error);
+                showToast('Gagal mengubah jadwal', 'error');
+            }
+        }
+        
+        function deleteSchedule(index) {
+            if (!confirm('Apakah Anda yakin ingin menghapus jadwal ini?')) return;
+            
+            try {
+                const database = JSON.parse(localStorage.getItem('spmbDatabase')) || {};
+                const schedules = database.jadwal || [];
+                
+                schedules.splice(index, 1);
+                database.jadwal = schedules;
+                localStorage.setItem('spmbDatabase', JSON.stringify(database));
+                loadScheduleList();
+                showToast('Jadwal berhasil dihapus', 'success');
+                
+            } catch (error) {
+                console.error('Error deleting schedule:', error);
+                showToast('Gagal menghapus jadwal', 'error');
+            }
+        }
+        
+        function saveContactInfo() {
+            try {
+                const database = JSON.parse(localStorage.getItem('spmbDatabase')) || {};
+                
+                database.kontak = {
+                    telepon: document.getElementById('contactPhone').value,
+                    whatsapp: document.getElementById('contactWhatsApp').value,
+                    email: document.getElementById('contactEmail').value,
+                    website: document.getElementById('contactWebsite').value,
+                    alamat: document.getElementById('contactAddress').value
+                };
+                
+                localStorage.setItem('spmbDatabase', JSON.stringify(database));
+                showToast('Informasi kontak berhasil disimpan', 'success');
+                
+            } catch (error) {
+                console.error('Error saving contact info:', error);
+                showToast('Gagal menyimpan informasi kontak', 'error');
+            }
+        }
+        
+        function loadMajorList() {
+            try {
+                const database = JSON.parse(localStorage.getItem('spmbDatabase')) || {};
+                const majorList = document.getElementById('majorList');
+                const majors = database.jurusan || [];
+                
+                if (majors.length === 0) {
+                    majorList.innerHTML = '<p class="text-center text-muted">Belum ada jurusan yang ditambahkan</p>';
+                    return;
+                }
+                
+                majorList.innerHTML = majors.map((major, index) => `
+                    <div class="schedule-item">
+                        <div>
+                            <strong>${major.kode} - ${major.nama}</strong>
+                            <p class="mb-0 mt-1" style="font-size: 0.9rem; color: #666;">
+                                ${major.deskripsi || ''}
+                            </p>
+                            <p class="mb-0 mt-1" style="font-size: 0.85rem; color: #888;">
+                                <i class="fas fa-cogs"></i> ${major.fasilitas || ''}
+                            </p>
+                        </div>
+                        <div class="schedule-actions">
+                            <button class="btn btn-small btn-warning" onclick="editMajor(${index})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-small btn-danger" onclick="deleteMajor(${index})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Error loading majors:', error);
+            }
+        }
+        
+        function addMajor() {
+            const code = document.getElementById('majorCode').value.trim();
+            const name = document.getElementById('majorName').value.trim();
+            const description = document.getElementById('majorDescription').value.trim();
+            const facilities = document.getElementById('majorFacilities').value.trim();
+            
+            if (!code || !name) {
+                showToast('Kode dan nama jurusan harus diisi', 'warning');
+                return;
+            }
+            
+            try {
+                const database = JSON.parse(localStorage.getItem('spmbDatabase')) || {};
+                
+                if (!database.jurusan) {
+                    database.jurusan = [];
+                }
+                
+                // Check if code already exists
+                const existing = database.jurusan.find(m => m.kode === code);
+                if (existing) {
+                    showToast('Kode jurusan sudah ada', 'warning');
+                    return;
+                }
+                
+                database.jurusan.push({
+                    kode: code,
+                    nama: name,
+                    deskripsi: description,
+                    fasilitas: facilities
+                });
+                
+                localStorage.setItem('spmbDatabase', JSON.stringify(database));
+                
+                // Clear inputs and refresh list
+                document.getElementById('majorCode').value = '';
+                document.getElementById('majorName').value = '';
+                document.getElementById('majorDescription').value = '';
+                document.getElementById('majorFacilities').value = '';
+                
+                loadMajorList();
+                showToast('Jurusan berhasil ditambahkan', 'success');
+                
+            } catch (error) {
+                console.error('Error adding major:', error);
+                showToast('Gagal menambahkan jurusan', 'error');
+            }
+        }
+        
+        function editMajor(index) {
+            try {
+                const database = JSON.parse(localStorage.getItem('spmbDatabase')) || {};
+                const majors = database.jurusan || [];
+                
+                if (majors[index]) {
+                    const major = majors[index];
+                    
+                    document.getElementById('majorCode').value = major.kode;
+                    document.getElementById('majorName').value = major.nama;
+                    document.getElementById('majorDescription').value = major.deskripsi || '';
+                    document.getElementById('majorFacilities').value = major.fasilitas || '';
+                    
+                    // Remove the existing major
+                    majors.splice(index, 1);
+                    database.jurusan = majors;
+                    localStorage.setItem('spmbDatabase', JSON.stringify(database));
+                    
+                    showToast('Jurusan siap diedit. Silakan perbarui data dan klik Tambah Jurusan', 'info');
+                }
+                
+            } catch (error) {
+                console.error('Error editing major:', error);
+                showToast('Gagal mengedit jurusan', 'error');
+            }
+        }
+        
+        function deleteMajor(index) {
+            if (!confirm('Apakah Anda yakin ingin menghapus jurusan ini?')) return;
+            
+            try {
+                const database = JSON.parse(localStorage.getItem('spmbDatabase')) || {};
+                const majors = database.jurusan || [];
+                
+                majors.splice(index, 1);
+                database.jurusan = majors;
+                localStorage.setItem('spmbDatabase', JSON.stringify(database));
+                
+                loadMajorList();
+                showToast('Jurusan berhasil dihapus', 'success');
+                
+            } catch (error) {
+                console.error('Error deleting major:', error);
+                showToast('Gagal menghapus jurusan', 'error');
+            }
+        }
+        
+        // ===== SYSTEM INFORMATION =====
+        function loadSystemInfo() {
+            try {
+                // Update system time
+                updateSystemTime();
+                
+                // Calculate data count
+                const database = JSON.parse(localStorage.getItem('spmbDatabase')) || {};
+                const pendaftarCount = database.pendaftar ? database.pendaftar.length : 0;
+                document.getElementById('systemDataCount').value = `${pendaftarCount} data pendaftar`;
+                
+                // Calculate storage size
+                const storageSize = localStorage.getItem('spmbDatabase') 
+                    ? Math.round(JSON.stringify(localStorage.getItem('spmbDatabase')).length / 1024)
+                    : 0;
+                document.getElementById('systemStorageSize').value = `${storageSize} KB`;
+                
+                // Update auto-refresh status
+                updateRefreshStatusUI();
+                
+                // Update last update time
+                updateLastUpdateTime();
+                
+            } catch (error) {
+                console.error('Error loading system info:', error);
+            }
+        }
+        
+        function updateSystemTime() {
+            const now = new Date();
+            const formattedTime = now.toLocaleString('id-ID', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('systemTime').value = formattedTime;
+        }
+        
+        // ===== BACKUP & RESTORE =====
+        function backupDatabase() {
+            try {
+                const database = localStorage.getItem('spmbDatabase');
+                if (!database) {
+                    showToast('Tidak ada data untuk dibackup', 'warning');
+                    return;
+                }
+                
+                const blob = new Blob([database], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                const timestamp = new Date().toISOString().slice(0, 19).replace(/[:.]/g, '-');
+                
+                a.href = url;
+                a.download = `spmb-backup-${timestamp}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showToast('Backup data berhasil diunduh', 'success');
+                
+            } catch (error) {
+                console.error('Error backing up database:', error);
+                showToast('Gagal membuat backup', 'error');
+            }
+        }
+        
+        function restoreDatabase() {
+            const fileInput = document.getElementById('restoreFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showToast('Pilih file backup terlebih dahulu', 'warning');
+                return;
+            }
+            
+            if (!file.name.endsWith('.json')) {
+                showToast('File harus berformat JSON', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    // Validate backup file structure
+                    if (!data.pendaftar && !data.infoSekolah) {
+                        showToast('File backup tidak valid', 'error');
+                        return;
+                    }
+                    
+                    if (confirm('Restore data akan menggantikan semua data yang ada. Lanjutkan?')) {
+                        localStorage.setItem('spmbDatabase', JSON.stringify(data));
+                        showToast('Data berhasil direstore', 'success');
+                        
+                        // Refresh the page to show updated data
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1500);
+                    }
+                    
+                } catch (error) {
+                    console.error('Error restoring database:', error);
+                    showToast('File backup tidak valid', 'error');
+                }
+            };
+            
+            reader.readAsText(file);
+            fileInput.value = ''; // Reset file input
+        }
+        
+        // ===== DATA MANAGEMENT FUNCTIONS =====
+        // Filter data berdasarkan kriteria
+        function filterData() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const jurusanFilter = document.getElementById('filterJurusan').value;
+            const dateFrom = document.getElementById('dateFrom').value;
+            const dateTo = document.getElementById('dateTo').value;
+            
+            filteredData = currentData.filter(item => {
+                // Search filter
+                const matchesSearch = !searchTerm || 
+                    (item.nama && item.nama.toLowerCase().includes(searchTerm)) ||
+                    (item.nomorPendaftaran && item.nomorPendaftaran.toLowerCase().includes(searchTerm)) ||
+                    (item.nisn && item.nisn.includes(searchTerm)) ||
+                    (item.asalSekolah && item.asalSekolah.toLowerCase().includes(searchTerm));
+                
+                // Jurusan filter
+                const matchesJurusan = !jurusanFilter || 
+                    (item.pilihanJurusan && item.pilihanJurusan === jurusanFilter);
+                
+                // Date filter
+                let matchesDate = true;
+                if (dateFrom || dateTo) {
+                    const registerDate = new Date(item.tanggalDaftar);
+                    const fromDate = dateFrom ? new Date(dateFrom) : null;
+                    const toDate = dateTo ? new Date(dateTo) : null;
+                    
+                    if (fromDate) fromDate.setHours(0, 0, 0, 0);
+                    if (toDate) toDate.setHours(23, 59, 59, 999);
+                    
+                    matchesDate = (!fromDate || registerDate >= fromDate) && 
+                                 (!toDate || registerDate <= toDate);
+                }
+                
+                return matchesSearch && matchesJurusan && matchesDate;
+            });
+            
+            currentPage = 1;
+            displayData();
+        }
+        
+        // Clear all filters
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('filterJurusan').value = '';
+            document.getElementById('dateFrom').value = '';
+            document.getElementById('dateTo').value = '';
+            filterData();
+        }
+        
+        // Display data in table
+        function displayData() {
+            const data = filteredData.length > 0 ? filteredData : currentData;
+            const tbody = document.getElementById('dataTable');
+            const emptyState = document.getElementById('emptyState');
+            
+            // Update statistics
+            updateStatistics(data);
+            
+            // Calculate pagination
+            const totalPages = Math.ceil(data.length / itemsPerPage);
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageData = data.slice(startIndex, endIndex);
+            
+            // Display table data
+            if (pageData.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+                tbody.innerHTML = pageData.map((item, index) => `
+                    <tr>
+                        <td>${startIndex + index + 1}</td>
+                        <td><strong>${item.nomorPendaftaran || '-'}</strong></td>
+                        <td>
+                            <div style="font-weight: 600;">${item.nama || '-'}</div>
+                            <div style="font-size: 0.85rem; color: #666;">${item.jenisKelamin || '-'}</div>
+                        </td>
+                        <td>${item.nisn || '-'}</td>
+                        <td>${item.asalSekolah || '-'}</td>
+                        <td>
+                            <span class="badge" style="background: ${getJurusanColor(item.pilihanJurusan)}; color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.85rem;">
+                                ${item.pilihanJurusan || '-'}
+                            </span>
+                        </td>
+                        <td>
+                            <div style="font-weight: bold; color: #1a237e;">${item.totalNilai || '0'}</div>
+                            <div style="font-size: 0.85rem; color: #666;">Rata: ${(parseFloat(item.totalNilai) / 4).toFixed(2) || '0'}</div>
+                        </td>
+                        <td>${formatDate(item.tanggalDaftar)}</td>
+                        <td>
+                            <span style="padding: 4px 10px; border-radius: 20px; font-size: 0.85rem; background: #e8f5e9; color: #2e7d32; font-weight: 500;">
+                                ${item.status || 'Diterima'}
+                            </span>
+                        </td>
+                        <td class="no-print">
+                            <div class="action-buttons">
+                                <button class="btn btn-small btn-info" onclick="viewDetail('${item.nomorPendaftaran}')" title="Detail">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn-small btn-warning" onclick="editData('${item.nomorPendaftaran}')" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-small btn-primary" onclick="viewDocuments('${item.nomorPendaftaran}')" title="Dokumen">
+                                    <i class="fas fa-file-alt"></i>
+                                </button>
+                                <button class="btn btn-small btn-danger" onclick="deleteData('${item.nomorPendaftaran}')" title="Hapus">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+            
+            // Update pagination
+            updatePagination(totalPages);
+        }
+        
+        // Get color for jurusan badge
+        function getJurusanColor(jurusan) {
+            if (!jurusan) return '#666';
+            if (jurusan.includes('Manajemen')) return '#2196f3';
+            if (jurusan.includes('Akutansi')) return '#4caf50';
+            if (jurusan.includes('Broadcasting')) return '#9c27b0';
+            return '#666';
+        }
+        
+        // Format date
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            try {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('id-ID', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
+                });
+            } catch (error) {
+                return dateString;
+            }
+        }
+        
+        // Update pagination
+        function updatePagination(totalPages) {
+            const paginationDiv = document.getElementById('pagination');
+            
+            if (totalPages <= 1) {
+                paginationDiv.innerHTML = '';
+                return;
+            }
+            
+            let html = '';
+            
+            // Previous button
+            html += `<button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">
+                <i class="fas fa-chevron-left"></i>
+            </button>`;
+            
+            // Page numbers
+            const maxVisible = window.innerWidth < 768 ? 3 : 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+            
+            if (endPage - startPage + 1 < maxVisible) {
+                startPage = Math.max(1, endPage - maxVisible + 1);
+            }
+            
+            // First page
+            if (startPage > 1) {
+                html += `<button class="page-btn" onclick="changePage(1)">1</button>`;
+                if (startPage > 2) html += '<span style="padding: 8px 5px;">...</span>';
+            }
+            
+            // Page numbers
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+            }
+            
+            // Last page
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) html += '<span style="padding: 8px 5px;">...</span>';
+                html += `<button class="page-btn" onclick="changePage(${totalPages})">${totalPages}</button>`;
+            }
+            
+            // Next button
+            html += `<button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">
+                <i class="fas fa-chevron-right"></i>
+            </button>`;
+            
+            paginationDiv.innerHTML = html;
+        }
+        
+        // Change page
+        function changePage(page) {
+            currentPage = page;
+            displayData();
+            // Scroll to top of table on mobile
+            if (window.innerWidth < 768) {
+                document.querySelector('.data-table-container').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+        
+        // View detail
+        function viewDetail(nomorPendaftaran) {
+            const pendaftar = currentData.find(p => p.nomorPendaftaran === nomorPendaftaran);
+            
+            if (pendaftar) {
+                const detailContent = document.getElementById('detailContent');
+                detailContent.innerHTML = `
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>No. Pendaftaran</label>
+                            <input type="text" value="${pendaftar.nomorPendaftaran}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Tanggal Daftar</label>
+                            <input type="text" value="${formatDate(pendaftar.tanggalDaftar)}" readonly>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nama Lengkap</label>
+                            <input type="text" value="${pendaftar.nama}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>NISN</label>
+                            <input type="text" value="${pendaftar.nisn}" readonly>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Sekolah Asal</label>
+                            <input type="text" value="${pendaftar.asalSekolah}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Jurusan</label>
+                            <input type="text" value="${pendaftar.pilihanJurusan}" readonly>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Total Nilai</label>
+                            <input type="text" value="${pendaftar.totalNilai}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <input type="text" value="${pendaftar.status || 'Diterima'}" readonly>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <button class="btn btn-primary w-100" onclick="downloadData('${pendaftar.nomorPendaftaran}')">
+                            <i class="fas fa-download"></i> Download Data Lengkap
+                        </button>
+                    </div>
+                `;
+                
+                openModal('detailModal');
+            }
+        }
+        
+        // Edit data
+        function editData(nomorPendaftaran) {
+            const pendaftar = currentData.find(p => p.nomorPendaftaran === nomorPendaftaran);
+            
+            if (pendaftar) {
+                editingId = nomorPendaftaran;
+                const editForm = document.getElementById('editForm');
+                
+                editForm.innerHTML = `
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editNama">Nama Lengkap</label>
+                            <input type="text" id="editNama" value="${pendaftar.nama || ''}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editNISN">NISN</label>
+                            <input type="text" id="editNISN" value="${pendaftar.nisn || ''}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editJurusan">Jurusan</label>
+                            <select id="editJurusan" required>
+                                <option value="Manajemen Perkantoran (MP)" ${pendaftar.pilihanJurusan === 'Manajemen Perkantoran (MP)' ? 'selected' : ''}>Manajemen Perkantoran</option>
+                                <option value="Akutansi dan Keuangan (AK)" ${pendaftar.pilihanJurusan === 'Akutansi dan Keuangan (AK)' ? 'selected' : ''}>Akutansi & Keuangan</option>
+                                <option value="Broadcasting & Perfilman (BPF)" ${pendaftar.pilihanJurusan === 'Broadcasting & Perfilman (BPF)' ? 'selected' : ''}>Broadcasting & Perfilman</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="editStatus">Status</label>
+                            <select id="editStatus">
+                                <option value="Diterima" ${pendaftar.status === 'Diterima' ? 'selected' : ''}>Diterima</option>
+                                <option value="Pending" ${pendaftar.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                                <option value="Ditolak" ${pendaftar.status === 'Ditolak' ? 'selected' : ''}>Ditolak</option>
+                                <option value="Cadangan" ${pendaftar.status === 'Cadangan' ? 'selected' : ''}>Cadangan</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editNilaiBindo">Bahasa Indonesia</label>
+                            <input type="number" id="editNilaiBindo" value="${pendaftar.nilaiBindo || 0}" min="0" max="100" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="editNilaiBing">Bahasa Inggris</label>
+                            <input type="number" id="editNilaiBing" value="${pendaftar.nilaiBing || 0}" min="0" max="100" step="0.01">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editNilaiMatematika">Matematika</label>
+                            <input type="number" id="editNilaiMatematika" value="${pendaftar.nilaiMatematika || 0}" min="0" max="100" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="editNilaiIPA">IPA</label>
+                            <input type="number" id="editNilaiIPA" value="${pendaftar.nilaiIPA || 0}" min="0" max="100" step="0.01">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editTelepon">Telepon Siswa</label>
+                            <input type="text" id="editTelepon" value="${pendaftar.telepon || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label for="editTeleponOrtu">Telepon Orang Tua</label>
+                            <input type="text" id="editTeleponOrtu" value="${pendaftar.teleponOrtu || ''}">
+                        </div>
+                    </div>
+                `;
+                
+                openModal('editModal');
+            }
+        }
+        
+        // Save edited data
+        function saveEdit() {
+            if (!editingId) return;
+            
+            try {
+                const database = JSON.parse(localStorage.getItem('spmbDatabase')) || { pendaftar: [] };
+                const index = database.pendaftar.findIndex(p => p.nomorPendaftaran === editingId);
+                
+                if (index !== -1) {
+                    // Calculate new total nilai
+                    const nilaiBindo = parseFloat(document.getElementById('editNilaiBindo').value) || 0;
+                    const nilaiBing = parseFloat(document.getElementById('editNilaiBing').value) || 0;
+                    const nilaiMatematika = parseFloat(document.getElementById('editNilaiMatematika').value) || 0;
+                    const nilaiIPA = parseFloat(document.getElementById('editNilaiIPA').value) || 0;
+                    const totalNilai = (nilaiBindo + nilaiBing + nilaiMatematika + nilaiIPA).toFixed(2);
+                    
+                    // Update data
+                    database.pendaftar[index] = {
+                        ...database.pendaftar[index],
+                        nama: document.getElementById('editNama').value,
+                        nisn: document.getElementById('editNISN').value,
+                        pilihanJurusan: document.getElementById('editJurusan').value,
+                        status: document.getElementById('editStatus').value,
+                        nilaiBindo: nilaiBindo,
+                        nilaiBing: nilaiBing,
+                        nilaiMatematika: nilaiMatematika,
+                        nilaiIPA: nilaiIPA,
+                        totalNilai: totalNilai,
+                        telepon: document.getElementById('editTelepon').value,
+                        teleponOrtu: document.getElementById('editTeleponOrtu').value
+                    };
+                    
+                    // Save to localStorage
+                    localStorage.setItem('spmbDatabase', JSON.stringify(database));
+                    
+                    // Reload data
+                    loadData();
+                    filterData();
+                    
+                    // Close modal
+                    closeModal('editModal');
+                    
+                    showToast('Data berhasil diperbarui!', 'success');
+                }
+            } catch (error) {
+                console.error('Error saving edit:', error);
+                showToast('Gagal memperbarui data', 'error');
+            }
+        }
+        
+        // View documents
+        function viewDocuments(nomorPendaftaran) {
+            const pendaftar = currentData.find(p => p.nomorPendaftaran === nomorPendaftaran);
+            
+            if (pendaftar) {
+                const documentContent = document.getElementById('documentContent');
+                let html = `
+                    <h4 style="margin-bottom: 20px;">Dokumen Pendaftar: ${pendaftar.nama}</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                `;
+                
+                // Check each document field
+                const documents = [
+                    { name: 'Foto 3x4', field: 'foto', type: 'image' },
+                    { name: 'Ijazah/SKHU', field: 'ijazah', type: 'document' },
+                    { name: 'Kartu Keluarga', field: 'kk', type: 'document' }
+                ];
+                
+                documents.forEach(doc => {
+                    if (pendaftar[doc.field]) {
+                        if (doc.type === 'image') {
+                            html += `
+                                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; text-align: center;">
+                                    <h5 style="margin-bottom: 15px; color: #333;">${doc.name}</h5>
+                                    <img src="${pendaftar[doc.field]}" alt="${doc.name}" style="max-width: 100%; max-height: 200px; border-radius: 5px; border: 1px solid #ddd;">
+                                    <div style="margin-top: 15px;">
+                                        <button class="btn btn-primary" onclick="downloadFile('${doc.name}', '${pendaftar[doc.field]}')">
+                                            <i class="fas fa-download"></i> Download
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            html += `
+                                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; text-align: center;">
+                                    <h5 style="margin-bottom: 15px; color: #333;">${doc.name}</h5>
+                                    <div style="padding: 20px; background: white; border-radius: 5px;">
+                                        <i class="fas fa-file-pdf" style="font-size: 3rem; color: #e53935;"></i>
+                                        <p style="margin-top: 10px; color: #666;">File ${doc.name}</p>
+                                    </div>
+                                    <div style="margin-top: 15px;">
+                                        <button class="btn btn-primary" onclick="downloadFile('${doc.name}', '${pendaftar[doc.field]}')">
+                                            <i class="fas fa-download"></i> Download
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    } else {
+                        html += `
+                            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; text-align: center;">
+                                <h5 style="margin-bottom: 15px; color: #333;">${doc.name}</h5>
+                                <div style="padding: 20px; background: white; border-radius: 5px;">
+                                    <i class="fas fa-times-circle" style="font-size: 3rem; color: #ccc;"></i>
+                                    <p style="margin-top: 10px; color: #999;">Belum diupload</p>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+                
+                html += `</div>`;
+                documentContent.innerHTML = html;
+                openModal('documentModal');
+            }
+        }
+        
+        // Download file
+        function downloadFile(filename, base64Data) {
+            if (!base64Data) {
+                showToast('File tidak tersedia!', 'warning');
+                return;
+            }
+            
+            try {
+                const link = document.createElement('a');
+                link.href = base64Data;
+                link.download = filename.replace(/[^a-z0-9]/gi, '_') + '.jpg';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showToast('File berhasil didownload', 'success');
+            } catch (error) {
+                console.error('Error downloading file:', error);
+                showToast('Gagal mendownload file!', 'error');
+            }
+        }
+        
+        // Download data as PDF
+        function downloadData(nomorPendaftaran) {
+            const pendaftar = currentData.find(p => p.nomorPendaftaran === nomorPendaftaran);
+            
+            if (pendaftar) {
+                // Create a new window and print
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <html>
+                        <head>
+                            <title>Data Pendaftar - ${pendaftar.nomorPendaftaran}</title>
+                            <style>
+                                body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; }
+                                h1 { color: #1a237e; text-align: center; margin-bottom: 5px; }
+                                h2 { color: #0d47a1; text-align: center; margin-bottom: 20px; }
+                                h3 { color: #1a237e; border-bottom: 2px solid #1a237e; padding-bottom: 5px; margin-top: 25px; }
+                                .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 15px 0; }
+                                .info-item { margin-bottom: 10px; }
+                                .info-label { font-weight: bold; color: #555; }
+                                hr { border: 1px solid #ccc; margin: 20px 0; }
+                                .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 2px solid #eee; color: #666; font-size: 0.9rem; }
+                                @media print {
+                                    body { padding: 10px; }
+                                    .no-print { display: none; }
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <h1>DATA PENDAFTAR SPMB</h1>
+                            <h2>SMK DARUL KAMAL NW KEMBANG KERANG</h2>
+                            <hr>
+                            
+                            <h3>Identitas Pendaftar</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">No. Pendaftaran:</span> ${pendaftar.nomorPendaftaran}
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Nama Lengkap:</span> ${pendaftar.nama}
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">NISN:</span> ${pendaftar.nisn}
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Tempat, Tgl Lahir:</span> ${pendaftar.tempatLahir}, ${formatDate(pendaftar.tanggalLahir)}
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Jenis Kelamin:</span> ${pendaftar.jenisKelamin}
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Usia:</span> ${pendaftar.usia} tahun
+                                </div>
+                            </div>
+                            
+                            <h3>Sekolah Asal & Nilai</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">Sekolah Asal:</span> ${pendaftar.asalSekolah}
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">No. Peserta UN:</span> ${pendaftar.noPesertaUN}
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">No. Seri Ijazah:</span> ${pendaftar.noSeriIjazah}
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Total Nilai SKHUN:</span> ${pendaftar.totalNilai}
+                                </div>
+                            </div>
+                            
+                            <h3>Data Orang Tua/Wali</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">Ayah/Wali:</span> ${pendaftar.namaOrtuWali}
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Ibu Kandung:</span> ${pendaftar.namaGadisIbu}
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Pekerjaan Ayah:</span> ${pendaftar.pekerjaanOrtu}
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Pendidikan Ayah:</span> ${pendaftar.pendidikanOrtu}
+                                </div>
+                            </div>
+                            
+                            <h3>Program Keahlian</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">Jurusan:</span> ${pendaftar.pilihanJurusan}
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Tanggal Daftar:</span> ${formatDate(pendaftar.tanggalDaftar)}
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Status:</span> ${pendaftar.status || 'Diterima'}
+                                </div>
+                            </div>
+                            
+                            <div class="footer">
+                                <p>Dokumen ini dicetak otomatis dari Sistem Penerimaan Murid Baru</p>
+                                <p>SMK Darul Kamal NW Kembang Kerang</p>
+                                <p style="margin-top: 30px;">TTD Panitia SPMB</p>
+                                <p>(__________________________)</p>
+                            </div>
+                            
+                            <div class="no-print" style="text-align: center; margin-top: 30px;">
+                                <button onclick="window.print()" style="padding: 10px 20px; background: #1a73e8; color: white; border: none; border-radius: 5px; cursor: pointer; margin: 5px;">
+                                    Cetak Dokumen
+                                </button>
+                                <button onclick="window.close()" style="padding: 10px 20px; background: #666; color: white; border: none; border-radius: 5px; cursor: pointer; margin: 5px;">
+                                    Tutup
+                                </button>
+                            </div>
+                        </body>
+                    </html>
+                `);
+                printWindow.document.close();
+            }
+        }
+        
+        // Delete data with confirmation
+        function deleteData(nomorPendaftaran) {
+            confirmCallback = function() {
+                try {
+                    const database = JSON.parse(localStorage.getItem('spmbDatabase')) || { pendaftar: [] };
+                    database.pendaftar = database.pendaftar.filter(p => p.nomorPendaftaran !== nomorPendaftaran);
+                    localStorage.setItem('spmbDatabase', JSON.stringify(database));
+                    
+                    loadData();
+                    filterData();
+                    
+                    showToast('Data berhasil dihapus!', 'success');
+                } catch (error) {
+                    console.error('Error deleting data:', error);
+                    showToast('Gagal menghapus data', 'error');
+                }
+            };
+            
+            document.getElementById('confirmMessage').textContent = 'Apakah Anda yakin ingin menghapus data ini?';
+            openModal('confirmModal');
+        }
+        
+        // Confirm delete all data
+        function confirmDeleteAll() {
+            confirmCallback = function() {
+                try {
+                    const database = JSON.parse(localStorage.getItem('spmbDatabase')) || { pendaftar: [] };
+                    database.pendaftar = [];
+                    localStorage.setItem('spmbDatabase', JSON.stringify(database));
+                    
+                    loadData();
+                    filterData();
+                    
+                    showToast('Semua data berhasil dihapus!', 'success');
+                } catch (error) {
+                    console.error('Error deleting all data:', error);
+                    showToast('Gagal menghapus semua data', 'error');
+                }
+            };
+            
+            document.getElementById('confirmMessage').textContent = 'Apakah Anda yakin ingin menghapus SEMUA data pendaftar? Tindakan ini tidak dapat dibatalkan!';
+            openModal('confirmModal');
+        }
+        
+        // Export to Excel
+        function exportToExcel() {
+            const data = filteredData.length > 0 ? filteredData : currentData;
+            
+            if (data.length === 0) {
+                showToast('Tidak ada data untuk diexport!', 'warning');
+                return;
+            }
+            
+            try {
+                // Format data for Excel
+                const exportData = data.map((item, index) => ({
+                    'No': index + 1,
+                    'No. Pendaftaran': item.nomorPendaftaran,
+                    'Nama Lengkap': item.nama,
+                    'NISN': item.nisn,
+                    'Sekolah Asal': item.asalSekolah,
+                    'Jurusan': item.pilihanJurusan,
+                    'Total Nilai': item.totalNilai,
+                    'Rata-rata': (parseFloat(item.totalNilai) / 4).toFixed(2),
+                    'Tanggal Daftar': formatDate(item.tanggalDaftar),
+                    'Status': item.status || 'Diterima',
+                    'Telepon': item.telepon
+                }));
+                
+                const worksheet = XLSX.utils.json_to_sheet(exportData);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Data Pendaftar");
+                
+                // Download file
+                const date = new Date().toISOString().split('T')[0];
+                XLSX.writeFile(workbook, `Data_Pendaftar_SPMB_${date}.xlsx`);
+                
+                showToast('Data berhasil diexport ke Excel', 'success');
+            } catch (error) {
+                console.error('Error exporting to Excel:', error);
+                showToast('Gagal mengexport data ke Excel', 'error');
+            }
+        }
+        
+        // Export to PDF
+        function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const data = filteredData.length > 0 ? filteredData : currentData;
+            
+            if (data.length === 0) {
+                showToast('Tidak ada data untuk diexport!', 'warning');
+                return;
+            }
+            
+            try {
+                // Add title
+                doc.setFontSize(16);
+                doc.setTextColor(40, 53, 147);
+                doc.text('DATA PENDAFTAR SPMB', 105, 15, { align: 'center' });
+                
+                doc.setFontSize(12);
+                doc.setTextColor(33, 33, 33);
+                doc.text('SMK DARUL KAMAL NW KEMBANG KERANG', 105, 22, { align: 'center' });
+                
+                // Add table headers
+                const headers = [['No', 'No. Pendaftaran', 'Nama', 'Jurusan', 'Total Nilai', 'Tanggal']];
+                const tableData = data.map((item, index) => [
+                    index + 1,
+                    item.nomorPendaftaran.substring(0, 10) + (item.nomorPendaftaran.length > 10 ? '...' : ''),
+                    item.nama.substring(0, 15) + (item.nama.length > 15 ? '...' : ''),
+                    item.pilihanJurusan,
+                    item.totalNilai,
+                    formatDate(item.tanggalDaftar).split(' ')[0]
+                ]);
+                
+                doc.autoTable({
+                    head: headers,
+                    body: tableData,
+                    startY: 30,
+                    theme: 'striped',
+                    headStyles: { fillColor: [26, 35, 126] },
+                    columnStyles: {
+                        0: { cellWidth: 10 },
+                        1: { cellWidth: 30 },
+                        2: { cellWidth: 40 },
+                        3: { cellWidth: 40 },
+                        4: { cellWidth: 25 },
+                        5: { cellWidth: 35 }
+                    }
+                });
+                
+                // Add footer
+                const pageCount = doc.internal.getNumberOfPages();
+                for (let i = 1; i <= pageCount; i++) {
+                    doc.setPage(i);
+                    doc.setFontSize(10);
+                    doc.setTextColor(128, 128, 128);
+                    doc.text(`Halaman ${i} dari ${pageCount}`, 105, doc.internal.pageSize.height - 10, { align: 'center' });
+                }
+                
+                // Download PDF
+                const date = new Date().toISOString().split('T')[0];
+                doc.save(`Data_Pendaftar_SPMB_${date}.pdf`);
+                
+                showToast('Data berhasil diexport ke PDF', 'success');
+            } catch (error) {
+                console.error('Error exporting to PDF:', error);
+                showToast('Gagal mengexport data ke PDF', 'error');
+            }
+        }
+        
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            document.body.style.overflow = 'auto';
+            editingId = null;
+            confirmCallback = null;
+        }
+        
+        function confirmAction() {
+            if (confirmCallback) {
+                confirmCallback();
+                closeModal('confirmModal');
+            }
+        }
+        
+        // Logout function
+        function logout() {
+            if (confirm('Apakah Anda yakin ingin logout?')) {
+                // Hentikan auto-refresh sebelum logout
+                if (autoRefreshInterval) {
+                    clearInterval(autoRefreshInterval);
+                }
+                
+                localStorage.removeItem('adminLoggedIn');
+                localStorage.removeItem('adminLoginTime');
+                window.location.href = 'login.html';
+            }
+        }
+        
+        // Fungsi untuk monitoring status auto-refresh (untuk debugging)
+        function getAutoRefreshStatus() {
+            return {
+                isActive: isAutoRefreshing,
+                interval: autoRefreshInterval ? 'Active' : 'Inactive',
+                lastUpdate: lastUpdateTime,
+                dataCount: currentData.length
+            };
+        }
+        
+        // Untuk debugging, bisa dipanggil di console
+        window.getRefreshStatus = getAutoRefreshStatus;
+        
+        // ===== PERBAIKAN: Inisialisasi yang dipindahkan ke DOMContentLoaded =====
+        // Check login status (moved to DOMContentLoaded to avoid flash)
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Admin panel loaded'); // Debug log
+            
+            // Check login status
+            const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
+            const loginTime = localStorage.getItem('adminLoginTime');
+            
+            if (!isLoggedIn) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            if (loginTime) {
+                const currentTime = new Date().getTime();
+                const twoHours = 2 * 60 * 60 * 1000;
+                
+                if (currentTime - loginTime > twoHours) {
+                    localStorage.removeItem('adminLoggedIn');
+                    localStorage.removeItem('adminLoginTime');
+                    window.location.href = 'login.html';
+                    return;
+                }
+            }
+            
+            // Update login time to extend session
+            localStorage.setItem('adminLoginTime', new Date().getTime());
+            
+            // Show content smoothly
+            document.body.style.opacity = 0;
+            setTimeout(() => {
+                document.body.style.opacity = 1;
+            }, 10);
+            
+            // Load data
+            const data = loadData();
+            console.log('Loaded data for display:', data); // Debug log
+            filterData();
+            
+            // Setup auto-refresh
+            setupAutoRefresh();
+            
+            // Update last update time display
+            lastUpdateTime = new Date();
+            updateLastUpdateTime();
+            
+            // Set default dates for filters
+            const today = new Date().toISOString().split('T')[0];
+            const weekAgo = new Date();
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            const weekAgoStr = weekAgo.toISOString().split('T')[0];
+            
+            document.getElementById('dateFrom').value = weekAgoStr;
+            document.getElementById('dateTo').value = today;
+            
+            // Add event listeners
+            document.getElementById('searchInput').addEventListener('input', function() {
+                // Add slight delay for better performance
+                clearTimeout(this.searchTimer);
+                this.searchTimer = setTimeout(() => {
+                    filterData();
+                }, 300);
+            });
+            
+            // Handle visibility change
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden) {
+                    const activeTab = document.querySelector('.tab-btn.active');
+                    if (activeTab && activeTab.dataset.tab === 'data') {
+                        console.log('Tab menjadi aktif, refresh data');
+                        loadData();
+                        filterData();
+                    }
+                }
+            });
+            
+            // Close modal when clicking outside
+            window.onclick = function(event) {
+                const modals = document.getElementsByClassName('modal');
+                for (let modal of modals) {
+                    if (event.target == modal) {
+                        modal.style.display = 'none';
+                        document.body.style.overflow = 'auto';
+                        editingId = null;
+                        confirmCallback = null;
+                    }
+                }
+            };
+            
+            // Handle Escape key to close modals
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    const modals = document.getElementsByClassName('modal');
+                    for (let modal of modals) {
+                        if (modal.style.display === 'flex') {
+                            modal.style.display = 'none';
+                            document.body.style.overflow = 'auto';
+                            editingId = null;
+                            confirmCallback = null;
+                        }
+                    }
+                }
+            });
+            
+            // Update system time every minute
+            setInterval(updateSystemTime, 60000);
+            
+            // Auto refresh data every 5 minutes (backup)
+            setInterval(function() {
+                if (isAutoRefreshing && !document.hidden) {
+                    const activeTab = document.querySelector('.tab-btn.active');
+                    if (activeTab && activeTab.dataset.tab === 'data') {
+                        loadData();
+                        filterData();
+                    }
+                }
+            }, 5 * 60 * 1000);
+            
+            // Show welcome message
+            setTimeout(() => {
+                showToast('Selamat datang di Admin Panel SPMB', 'info');
+                
+                // Debug: Check localStorage content
+                const db = JSON.parse(localStorage.getItem('spmbDatabase'));
+                console.log('Full database from localStorage:', db);
+                if (db && db.pendaftar) {
+                    console.log('Number of pendaftar in database:', db.pendaftar.length);
+                }
+            }, 1000);
+        });
+        
+        // Handle window resize for responsive adjustments
+        window.addEventListener('resize', function() {
+            // Recalculate pagination on resize
+            const data = filteredData.length > 0 ? filteredData : currentData;
+            const totalPages = Math.ceil(data.length / itemsPerPage);
+            updatePagination(totalPages);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,502 @@
+[file content begin]
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Admin - SPMB SMK Darul Kamal</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="logosmk.png" type="image/x-icon">
+    <style>
+        /* Reset untuk mencegah flash/kedipan */
+        body {
+            opacity: 0;
+            animation: fadeIn 0.5s ease-in forwards;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: moveBackground 20s linear infinite;
+            z-index: 0;
+        }
+        
+        @keyframes moveBackground {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .login-logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 25px;
+            background: white;
+            padding: 15px;
+            border-radius: 50%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 3px solid #ff9800;
+            transition: transform 0.3s ease;
+        }
+        
+        .login-logo:hover {
+            transform: scale(1.05);
+        }
+        
+        .login-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .login-title {
+            color: #1a237e;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .login-subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        
+        .login-form .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        
+        .login-form label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            z-index: 1;
+        }
+        
+        .input-with-icon input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .input-with-icon input:focus {
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+            outline: none;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #1a73e8, #0d47a1);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(26, 115, 232, 0.3);
+        }
+        
+        .login-btn:active {
+            transform: translateY(0);
+        }
+        
+        .login-footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            color: #1a73e8;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .back-link:hover {
+            color: #0d47a1;
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            color: #c62828;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            border-left: 4px solid #f44336;
+            text-align: left;
+            animation: shake 0.5s ease;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            z-index: 2;
+        }
+        
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+            
+            .login-logo {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .login-title {
+                font-size: 1.5rem;
+            }
+            
+            .login-btn {
+                padding: 14px;
+            }
+        }
+        
+        /* Loading spinner */
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-logo">
+                <img src="logosmk.png" alt="Logo SMK Darul Kamal">
+            </div>
+            
+            <h1 class="login-title">Admin Panel Login</h1>
+            <p class="login-subtitle">SISTEM PENERIMAAN MURID BARU<br>SMK DARUL KAMAL NW KEMBANG KERANG</p>
+            
+            <div class="error-message" id="errorMessage">
+                <i class="fas fa-exclamation-circle"></i> 
+                <span id="errorText">Username atau password salah!</span>
+            </div>
+            
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label for="username">
+                        <i class="fas fa-user-shield"></i> Username Admin
+                    </label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="username" name="username" 
+                               placeholder="Masukkan username admin" 
+                               required
+                               autocomplete="username">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">
+                        <i class="fas fa-key"></i> Password
+                    </label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" name="password" 
+                               placeholder="Masukkan password" 
+                               required
+                               autocomplete="current-password">
+                        <button type="button" class="password-toggle" id="togglePassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <button type="submit" class="login-btn" id="submitBtn">
+                    <i class="fas fa-sign-in-alt"></i> 
+                    <span id="btnText">Masuk ke Admin Panel</span>
+                    <div class="spinner" id="loginSpinner"></div>
+                </button>
+            </form>
+            
+            <div class="login-footer">
+                <p><i class="fas fa-info-circle"></i> Hanya untuk admin dan panitia SPMB</p>
+                <a href="index.html" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Kembali ke Halaman Utama
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Default admin credentials
+        const ADMIN_USERNAME = "ADMIN SPMB";
+        const ADMIN_PASSWORD = "ADMINSPMBSMKDKNW";
+        
+        // Immediately show content to prevent flash
+        document.body.style.opacity = 1;
+        
+        // Check if already logged in (without redirect flash)
+        document.addEventListener('DOMContentLoaded', function() {
+            const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
+            const loginTime = localStorage.getItem('adminLoginTime');
+            
+            if (isLoggedIn && loginTime) {
+                const currentTime = new Date().getTime();
+                const twoHours = 2 * 60 * 60 * 1000;
+                
+                // Check if session is still valid
+                if (currentTime - loginTime < twoHours) {
+                    // Smooth redirect to prevent flash
+                    setTimeout(() => {
+                        window.location.href = 'admin.html';
+                    }, 100);
+                } else {
+                    // Clear expired session
+                    localStorage.removeItem('adminLoggedIn');
+                    localStorage.removeItem('adminLoginTime');
+                }
+            }
+        });
+        
+        // Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const icon = this.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+        
+        // Form submission
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            const spinner = document.getElementById('loginSpinner');
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            btnText.textContent = 'Memproses...';
+            spinner.style.display = 'block';
+            
+            // Simulate network delay for better UX
+            await new Promise(resolve => setTimeout(resolve, 800));
+            
+            // Validation
+            let isValid = true;
+            let errorMsg = '';
+            
+            if (!username) {
+                isValid = false;
+                errorMsg = 'Username tidak boleh kosong!';
+            } else if (!password) {
+                isValid = false;
+                errorMsg = 'Password tidak boleh kosong!';
+            } else if (username !== ADMIN_USERNAME || password !== ADMIN_PASSWORD) {
+                isValid = false;
+                errorMsg = 'Username atau password salah!';
+            }
+            
+            if (!isValid) {
+                // Show error
+                errorText.textContent = errorMsg;
+                errorMessage.style.display = 'block';
+                
+                // Reset button
+                submitBtn.disabled = false;
+                btnText.textContent = 'Masuk ke Admin Panel';
+                spinner.style.display = 'none';
+                
+                // Hide error after 3 seconds
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 3000);
+                
+                // Shake animation for error
+                errorMessage.style.animation = 'none';
+                setTimeout(() => {
+                    errorMessage.style.animation = 'shake 0.5s ease';
+                }, 10);
+                
+                return;
+            }
+            
+            // Successful login
+            try {
+                // Set login session
+                localStorage.setItem('adminLoggedIn', 'true');
+                localStorage.setItem('adminLoginTime', new Date().getTime());
+                
+                // Update button to success state
+                btnText.textContent = 'Login Berhasil!';
+                spinner.style.display = 'none';
+                submitBtn.style.background = 'linear-gradient(135deg, #4caf50, #2e7d32)';
+                submitBtn.innerHTML = '<i class="fas fa-check"></i> Login Berhasil!';
+                
+                // Add success animation
+                submitBtn.style.animation = 'pulse 1s ease';
+                
+                // Redirect after success animation
+                setTimeout(() => {
+                    window.location.href = 'admin.html';
+                }, 1000);
+                
+            } catch (error) {
+                // Handle storage error
+                errorText.textContent = 'Terjadi kesalahan sistem. Coba lagi.';
+                errorMessage.style.display = 'block';
+                
+                submitBtn.disabled = false;
+                btnText.textContent = 'Masuk ke Admin Panel';
+                spinner.style.display = 'none';
+            }
+        });
+        
+        // Auto logout after 2 hours (background check)
+        setInterval(() => {
+            const loginTime = localStorage.getItem('adminLoginTime');
+            if (loginTime) {
+                const currentTime = new Date().getTime();
+                if (currentTime - loginTime > 2 * 60 * 60 * 1000) { // 2 hours
+                    localStorage.removeItem('adminLoggedIn');
+                    localStorage.removeItem('adminLoginTime');
+                    
+                    // If currently on admin page, redirect to login
+                    if (window.location.pathname.includes('admin.html')) {
+                        window.location.href = 'login.html';
+                    }
+                }
+            }
+        }, 60000); // Check every minute
+        
+        // Add pulse animation for success
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.05); }
+                100% { transform: scale(1); }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Auto-focus on username field
+        setTimeout(() => {
+            document.getElementById('username').focus();
+        }, 300);
+        
+        // Prevent form submission on Enter key in password field (except when focused)
+        document.getElementById('password').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !this.value.trim()) {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
+[file content end]

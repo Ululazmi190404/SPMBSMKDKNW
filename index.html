@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPMB Online - SMK Darul Kamal NW Kembang Kerang</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="logosmk.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="logosmk.png" alt="Logo SMK" class="logo-img">
+                    <div class="logo-text">
+                        <h1>SISTEM PENERIMAAN MURID BARU</h1>
+                        <p>SMK DARUL KAMAL NW KEMBANG KERANG</p>
+                        <h2><i class="fas fa-award"></i> TERAKREDITASI B</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            <div>Isi formulir di bawah untuk mendaftar SPMB. Pastikan semua data diisi dengan benar sesuai dokumen.</div>
+        </div>
+        
+        <div class="main-content">
+            <!-- FORMULIR PENDAFTARAN SPMB -->
+            <div class="card">
+                <h2><i class="fas fa-edit"></i> Formulir Pendaftaran SPMB</h2>
+                <form id="ppdbForm">
+                    <!-- IDENTITAS SEKOLAH ASAL -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-school"></i> IDENTITAS SEKOLAH ASAL</h3>
+                        
+                        <div class="form-group">
+                            <label for="asalSekolah">1. Sekolah Asal (SMP/MTs) *</label>
+                            <input type="text" id="asalSekolah" name="asalSekolah" placeholder="Nama Sekolah Asal" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="alamatSekolahAsal">2. Alamat Sekolah Asal *</label>
+                            <textarea id="alamatSekolahAsal" name="alamatSekolahAsal" rows="2" placeholder="Alamat lengkap sekolah asal" required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="nisn">3. NISN (Nomor Induk Siswa Nasional) *</label>
+                            <input type="text" id="nisn" name="nisn" placeholder="10 digit NISN" required maxlength="10">
+                            <small style="color: #666; display: block; margin-top: 5px;">10 digit angka NISN</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="noPesertaUN">4. No. Peserta UN SMP/MTs *</label>
+                            <input type="text" id="noPesertaUN" name="noPesertaUN" placeholder="Nomor peserta UN" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="noSeriIjazah">5. No. Seri Ijazah *</label>
+                            <input type="text" id="noSeriIjazah" name="noSeriIjazah" placeholder="Nomor seri ijazah" required>
+                        </div>
+                        
+                        <!-- NILAI SKHUN -->
+                        <div class="form-group">
+                            <label>6. Nilai SKHUN (Surat Keterangan Hasil Ujian Nasional) *</label>
+                            <div class="nilai-group">
+                                <div class="nilai-item">
+                                    <label for="nilaiBindo">Bahasa Indonesia</label>
+                                    <input type="number" id="nilaiBindo" name="nilaiBindo" min="0" max="100" step="0.01" placeholder="0-100" required>
+                                </div>
+                                <div class="nilai-item">
+                                    <label for="nilaiBing">Bahasa Inggris</label>
+                                    <input type="number" id="nilaiBing" name="nilaiBing" min="0" max="100" step="0.01" placeholder="0-100" required>
+                                </div>
+                                <div class="nilai-item">
+                                    <label for="nilaiMatematika">Matematika</label>
+                                    <input type="number" id="nilaiMatematika" name="nilaiMatematika" min="0" max="100" step="0.01" placeholder="0-100" required>
+                                </div>
+                                <div class="nilai-item">
+                                    <label for="nilaiIPA">IPA</label>
+                                    <input type="number" id="nilaiIPA" name="nilaiIPA" min="0" max="100" step="0.01" placeholder="0-100" required>
+                                </div>
+                                <div class="nilai-item">
+                                    <label for="totalNilai">Total Nilai SKHUN</label>
+                                    <input type="number" id="totalNilai" name="totalNilai" min="0" max="400" step="0.01" placeholder="Otomatis terisi" readonly required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- IDENTITAS PRIBADI SISWA -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-user-graduate"></i> IDENTITAS PRIBADI SISWA</h3>
+                        
+                        <div class="form-group">
+                            <label for="nama">1. Nama Lengkap *</label>
+                            <input type="text" id="nama" name="nama" placeholder="Nama lengkap sesuai ijazah" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="tempatLahir">2. Tempat Lahir *</label>
+                            <input type="text" id="tempatLahir" name="tempatLahir" placeholder="Tempat lahir" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="tanggalLahir">Tanggal Lahir *</label>
+                            <input type="date" id="tanggalLahir" name="tanggalLahir" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="jenisKelamin">3. Jenis Kelamin *</label>
+                            <select id="jenisKelamin" name="jenisKelamin" required>
+                                <option value="">Pilih jenis kelamin</option>
+                                <option value="Laki-laki">Laki-laki</option>
+                                <option value="Perempuan">Perempuan</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="usia">4. Usia (Tahun) *</label>
+                            <input type="number" id="usia" name="usia" min="10" max="25" placeholder="Usia saat mendaftar" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="anakKe">5. Anak Ke *</label>
+                            <input type="number" id="anakKe" name="anakKe" min="1" max="20" placeholder="Contoh: 1, 2, 3" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="alamat">6. Alamat Lengkap *</label>
+                            <textarea id="alamat" name="alamat" rows="3" placeholder="Alamat lengkap tempat tinggal" required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="telepon">7. No. HP/Telepon *</label>
+                            <input type="tel" id="telepon" name="telepon" placeholder="Contoh: 081234567890" required>
+                        </div>
+                    </div>
+                    
+                    <!-- DATA ORANG TUA/WALI -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-users"></i> DATA ORANG TUA/WALI</h3>
+                        
+                        <div class="form-group">
+                            <label for="namaOrtuWali">1. Nama Lengkap Ayah/Wali *</label>
+                            <input type="text" id="namaOrtuWali" name="namaOrtuWali" placeholder="Nama lengkap ayah/wali" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="tempatLahirOrtu">2. Tempat Lahir Ayah/Wali *</label>
+                            <input type="text" id="tempatLahirOrtu" name="tempatLahirOrtu" placeholder="Tempat lahir" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="tanggalLahirOrtu">Tanggal Lahir Ayah/Wali *</label>
+                            <input type="date" id="tanggalLahirOrtu" name="tanggalLahirOrtu" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="namaGadisIbu">3. Nama Gadis Ibu Kandung *</label>
+                            <input type="text" id="namaGadisIbu" name="namaGadisIbu" placeholder="Nama gadis ibu kandung" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="alamatOrtu">4. Alamat Lengkap Orang Tua *</label>
+                            <textarea id="alamatOrtu" name="alamatOrtu" rows="2" placeholder="Alamat orang tua" required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="pekerjaanOrtu">5. Pekerjaan Ayah/Wali *</label>
+                            <input type="text" id="pekerjaanOrtu" name="pekerjaanOrtu" placeholder="Pekerjaan ayah/wali" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="pendidikanOrtu">6. Pendidikan Terakhir Ayah/Wali *</label>
+                            <select id="pendidikanOrtu" name="pendidikanOrtu" required>
+                                <option value="">Pilih pendidikan</option>
+                                <option value="SD">SD</option>
+                                <option value="SMP">SMP</option>
+                                <option value="SMA">SMA</option>
+                                <option value="D1">D1</option>
+                                <option value="D2">D2</option>
+                                <option value="D3">D3</option>
+                                <option value="S1">S1</option>
+                                <option value="S2">S2</option>
+                                <option value="S3">S3</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="teleponOrtu">7. No. HP/Telepon Orang Tua *</label>
+                            <input type="tel" id="teleponOrtu" name="teleponOrtu" placeholder="Telepon orang tua" required>
+                        </div>
+                    </div>
+                    
+                    <!-- PILIHAN JURUSAN -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-graduation-cap"></i> PILIHAN PROGRAM KEAHLIAN</h3>
+                        
+                        <div class="form-group">
+                            <label for="pilihanJurusan">Pilih Program Keahlian *</label>
+                            <select id="pilihanJurusan" name="pilihanJurusan" required>
+                                <option value="">Pilih program keahlian</option>
+                                <option value="Manajemen Perkantoran (MP)">1. Manajemen Perkantoran (MP)</option>
+                                <option value="Akutansi dan Keuangan (AK)">2. Akutansi dan Keuangan (AK)</option>
+                                <option value="Broadcasting & Perfilman (BPF)">3. Broadcasting & Perfilman (BPF)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- UPLOAD DOKUMEN -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-file-upload"></i> UPLOAD DOKUMEN</h3>
+                        
+                        <div class="form-group">
+                            <label for="foto">Upload Foto (3x4) *</label>
+                            <input type="file" id="foto" name="foto" accept="image/*" required>
+                            <small style="color: #666; display: block; margin-top: 5px;">Format: JPG/PNG, Ukuran: 3x4 cm, Maksimal 2MB</small>
+                            <div id="fotoPreview" style="margin-top: 10px;"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="ijazah">Upload Ijazah/SKHU *</label>
+                            <input type="file" id="ijazah" name="ijazah" accept=".pdf,.jpg,.jpeg,.png" required>
+                            <small style="color: #666; display: block; margin-top: 5px;">Format: PDF/JPG/PNG, Maksimal 5MB</small>
+                            <div id="ijazahPreview" style="margin-top: 10px;"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="kk">Upload Kartu Keluarga *</label>
+                            <input type="file" id="kk" name="kk" accept=".pdf,.jpg,.jpeg,.png" required>
+                            <small style="color: #666; display: block; margin-top: 5px;">Format: PDF/JPG/PNG, Maksimal 5MB</small>
+                            <div id="kkPreview" style="margin-top: 10px;"></div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn" style="width: 100%;">
+                        <i class="fas fa-paper-plane"></i> Kirim Pendaftaran SPMB
+                    </button>
+                </form>
+            </div>
+            
+            <!-- HASIL & INFORMASI -->
+            <div class="card">
+                <!-- Hasil Pendaftaran (akan muncul setelah submit) -->
+                <div class="result-container" id="resultContainer">
+                    <div class="result-header">
+                        <h2>Hasil Pendaftaran SPMB</h2>
+                        <p>No. Pendaftaran: <strong id="nomorPendaftaran">-</strong></p>
+                        <div class="status sukses" id="statusPendaftaran">SUKSES</div>
+                    </div>
+                    
+                    <div id="resultData">
+                        <!-- Data akan diisi oleh JavaScript -->
+                    </div>
+                    
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i>
+                        <div>Pendaftaran Anda berhasil dikirim. Silakan cetak halaman ini sebagai bukti pendaftaran.</div>
+                    </div>
+                    
+                    <div class="actions">
+                        <button class="btn btn-print" id="printBtn">
+                            <i class="fas fa-print"></i> Cetak Formulir
+                        </button>
+                        <button class="btn" id="printAllBtn">
+                            <i class="fas fa-print"></i> Cetak Semua Dokumen
+                        </button>
+                        <button class="btn btn-download" id="downloadBtn">
+                            <i class="fas fa-download"></i> Download Bukti
+                        </button>
+                        <button class="btn" id="editBtn">
+                            <i class="fas fa-edit"></i> Edit Data
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Informasi SPMB -->
+                <div id="instructionPanel">
+                    <h2><i class="fas fa-info-circle"></i> Informasi SPMB</h2>
+                    
+                    <!-- PROFIL SEKOLAH -->
+                    <div style="margin-top: 20px; padding: 20px; background-color: #e8f5e9; border-radius: 8px; border-left: 4px solid #4caf50;">
+                        <h3 style="color: #2e7d32; margin-bottom: 15px;">
+                            <i class="fas fa-school"></i> SMK DARUL KAMAL NW KEMBANG KERANG
+                        </h3>
+                        <div id="infoSekolah">
+                            <!-- Diisi dari database -->
+                        </div>
+                    </div>
+                    
+                    <!-- PROGRAM KEAHLIAN -->
+                    <div style="margin-top: 20px; padding: 20px; background-color: #e3f2fd; border-radius: 8px; border-left: 4px solid #2196f3;">
+                        <h3 style="color: #1565c0; margin-bottom: 15px;">
+                            <i class="fas fa-graduation-cap"></i> PROGRAM KEAHLIAN
+                        </h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                            <div style="background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                                <h4 style="color: #2196f3; margin-bottom: 10px;">1. Manajemen Perkantoran (MP)</h4>
+                                <p style="color: #555; font-size: 0.9rem;">Mencetak tenaga administrasi perkantoran yang profesional.</p>
+                            </div>
+                            <div style="background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                                <h4 style="color: #4caf50; margin-bottom: 10px;">2. Akutansi dan Keuangan (AK)</h4>
+                                <p style="color: #555; font-size: 0.9rem;">Mengelola keuangan dan pembukuan perusahaan.</p>
+                            </div>
+                            <div style="background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                                <h4 style="color: #9c27b0; margin-bottom: 10px;">3. Broadcasting & Perfilman (BPF)</h4>
+                                <p style="color: #555; font-size: 0.9rem;">Produksi konten media dan perfilman.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- JADWAL PENTING -->
+                    <div style="margin-top: 20px; padding: 15px; background-color: #fff3e0; border-radius: 8px; border-left: 4px solid #ff9800;">
+                        <h3 style="color: #ef6c00; margin-bottom: 10px;">
+                            <i class="fas fa-calendar-alt"></i> Jadwal Penting SPMB 2026
+                        </h3>
+                        <ul id="jadwalList" style="padding-left: 20px;">
+                            <!-- Diisi dari database -->
+                        </ul>
+                    </div>
+                    
+                    <!-- KONTAK -->
+                    <div style="margin-top: 20px; padding: 15px; background-color: #f3e5f5; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                        <h3 style="color: #7b1fa2; margin-bottom: 10px;">
+                            <i class="fas fa-phone"></i> Kontak Panitia SPMB
+                        </h3>
+                        <div id="kontakInfo">
+                            <!-- Diisi dari database -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- FOOTER -->
+        <div class="footer">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; text-align: left;">
+                <div>
+                    <h4 style="color: #1a73e8; margin-bottom: 10px;">
+                        <i class="fas fa-university"></i> SMK Darul Kamal
+                    </h4>
+                    <p>Terakreditasi B dengan sistem pembelajaran berbasis teknologi dan akhlak mulia.</p>
+                </div>
+                <div>
+                    <h4 style="color: #1a73e8; margin-bottom: 10px;">
+                        <i class="fas fa-clock"></i> Jam Operasional
+                    </h4>
+                    <p>Senin - Kamis: 07.30 - 16.00 WITA<br>
+                    <p>Sabtu - Minggu : 08.00 - 12.00 WITA</p>
+                </div>
+                <div>
+                    <h4 style="color: #1a73e8; margin-bottom: 10px;">
+                        <i class="fas fa-link"></i> Tautan Cepat
+                    </h4>
+                    <p>
+                        <a href="admin.html" style="color: #1a73e8; text-decoration: none;">
+                            <i class="fas fa-user-shield"></i> Admin Panel
+                        </a><br>
+                        <a href="#" onclick="window.print()" style="color: #1a73e8; text-decoration: none;">
+                            <i class="fas fa-print"></i> Cetak Halaman
+                        </a>
+                    </p>
+                </div>
+                <div>
+                    <h4 style="color: #1a73e8; margin-bottom: 10px;">
+                        <i class="fas fa-bug"></i> Debug Tools
+                    </h4>
+                    <p>
+                        <button onclick="debugLocalStorage()" style="background: #ff9800; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.9rem;">
+                            Debug Data
+                        </button>
+                        <button onclick="clearAllData()" style="background: #f44336; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.9rem; margin-left: 5px;">
+                            Clear All
+                        </button>
+                    </p>
+                </div>
+            </div>
+            
+            <p style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #ddd; color: #666; font-size: 0.85rem;">
+                © 2026 SPMB Online - SMK Darul Kamal NW Kembang Kerang. Hak Cipta Dilindungi.
+                <br>
+                <span id="footerContact">
+                    Hubungi kami: info@smkdarulkamal.sch.id | Telepon: (0376) 123-456
+                </span>
+            </p>
+        </div>
+    </div>
+    
+    <!-- WATERMARK UNTUK CETAKAN -->
+    <div class="watermark">SMK DARUL KAMAL NW KEMBANG KERANG</div>
+    
+    <!-- Tambahkan library untuk export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="sync.js"></script>
+    <script src="database.js"></script>
+    <script src="init.js"></script>
+    <script src="script.js"></script>
+    
+    <script>
+        // Hitung total nilai otomatis
+        document.addEventListener('DOMContentLoaded', function() {
+            const nilaiInputs = ['nilaiBindo', 'nilaiBing', 'nilaiMatematika', 'nilaiIPA'];
+            const totalInput = document.getElementById('totalNilai');
+            
+            function calculateTotal() {
+                let total = 0;
+                nilaiInputs.forEach(id => {
+                    const value = parseFloat(document.getElementById(id).value) || 0;
+                    total += value;
+                });
+                totalInput.value = total.toFixed(2);
+            }
+            
+            nilaiInputs.forEach(id => {
+                document.getElementById(id).addEventListener('input', calculateTotal);
+            });
+            
+            // Set tanggal minimum/maksimum
+            const today = new Date();
+            const minDate = new Date(today.getFullYear() - 25, today.getMonth(), today.getDate());
+            const maxDate = new Date(today.getFullYear() - 10, today.getMonth(), today.getDate());
+            
+            document.getElementById('tanggalLahir').max = maxDate.toISOString().split('T')[0];
+            document.getElementById('tanggalLahir').min = minDate.toISOString().split('T')[0];
+            
+            document.getElementById('tanggalLahirOrtu').max = new Date().toISOString().split('T')[0];
+        });
+        
+        // Debug functions
+        function debugLocalStorage() {
+            const db = JSON.parse(localStorage.getItem('spmbDatabase'));
+            console.log('=== LOCAL STORAGE DEBUG ===');
+            console.log('spmbDatabase:', db);
+            if (db && db.pendaftar) {
+                console.log('Total pendaftar:', db.pendaftar.length);
+                console.log('Pendaftar details:', db.pendaftar);
+            }
+            alert('Check console for debug information (F12)');
+        }
+        
+        function clearAllData() {
+            if (confirm('Hapus semua data pendaftar? Tindakan ini tidak dapat dibatalkan!')) {
+                localStorage.removeItem('spmbDatabase');
+                localStorage.removeItem('spmbFormDraft');
+                sessionStorage.clear();
+                alert('Semua data telah dihapus. Halaman akan direfresh.');
+                location.reload();
+            }
+        }
+    </script>
+    
+    <style>
+        .form-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f7ff;
+        }
+        
+        .form-section h3 {
+            color: #1a73e8;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .form-section h3 i {
+            margin-right: 10px;
+        }
+        
+        .nilai-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .nilai-item {
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #eee;
+        }
+        
+        .nilai-item label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: #555;
+        }
+        
+        .nilai-item input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        @media (max-width: 768px) {
+            .nilai-group {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+    </style>
+</body>
+</html>
